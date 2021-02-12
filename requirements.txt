@@ -1,0 +1,4 @@
+aiohttp
+pyrogram
+TgCrypto
+asyncio
