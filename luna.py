@@ -91,6 +91,25 @@ async def chat(_, message):
     await luna.send_chat_action(message.chat.id, "cancel")
 
 
+@luna.on_message(
+        filters.private & 
+        ~filters.command("blacklist") &
+        ~filters.command("shutdown") &
+        ~filters.command("help"))
+async def chatpm(_, message):
+    await luna.send_chat_action(message.chat.id, "typing")
+    if not message.text:
+        query = "Hello"
+    else:
+        query = message.text
+    try:
+        res = await getresp(query)
+        await asyncio.sleep(1)
+    except Exception as e:
+        res = str(e)
+    await message.reply_text(res)
+    await luna.send_chat_action(message.chat.id, "cancel")
+
 print("""
 -----------------
 | Luna Started! |
