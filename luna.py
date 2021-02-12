@@ -91,4 +91,12 @@ async def chat(_, message):
     await luna.send_chat_action(message.chat.id, "cancel")
 
 
+print("""
+-----------------
+| Luna Started! |
+-----------------
+
+""")
+
+
 luna.run()
