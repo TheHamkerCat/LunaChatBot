@@ -78,6 +78,7 @@ async def whitelist(_, message):
 
 
 @luna.on_message(
+    ~filters.private &
     ~filters.command("blacklist")
     & ~filters.command("shutdown")
     & ~filters.command("help")
