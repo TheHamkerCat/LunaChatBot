@@ -92,7 +92,7 @@ async def chat(_, message):
     else:
         if message.text:
             query = message.text
-            if "luna" in query or "Luna" in query or "@LunaChatBot" in query:
+            if "luna" in query or "Luna" in query or "LUNA" in query or "@LunaChatBot" in query:
                 await luna.send_chat_action(message.chat.id, "typing")
                 try:
                     res = await getresp(query)
