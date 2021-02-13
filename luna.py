@@ -1,7 +1,9 @@
 import aiohttp
 import asyncio
+import re
 from config import bot_token, owner_id, bot_id
 from pyrogram import Client, filters
+
 
 luna = Client(":memory:",bot_token=bot_token, api_id=6, api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e")
 
@@ -92,7 +94,7 @@ async def chat(_, message):
     else:
         if message.text:
             query = message.text
-            if "luna" in query or "Luna" in query or "LUNA" in query or "@LunaChatBot" in query:
+            if re.search("[.|\n]{0,}[l|L][u|U][n|N][a|A][.|\n]{0,}", query):
                 await luna.send_chat_action(message.chat.id, "typing")
                 try:
                     res = await getresp(query)
