@@ -5,16 +5,22 @@ from config import bot_token, owner_id, bot_id
 from pyrogram import Client, filters
 
 
-luna = Client(":memory:",bot_token=bot_token, api_id=6, api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e")
+luna = Client(
+    ":memory:",
+    bot_token=bot_token,
+    api_id=6,
+    api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
+)
 
 blacklisted = []
+
 
 async def getresp(query):
     url = f"https://lunabot.tech/?query={query}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             res = await res.json()
-            text = res['response']
+            text = res["response"]
             return text
 
 
@@ -24,7 +30,9 @@ async def start(_, message):
     if user_id in blacklisted:
         return
     await luna.send_chat_action(message.chat.id, "typing")
-    await message.reply_text("**Only For Owners**\n/shutdown - `Shutdown Luna.`\n/blacklist - `Blacklist A User.`\n/whitelist - `Whitelist A User.`")
+    await message.reply_text(
+        "**Only For Owners**\n/shutdown - `Shutdown Luna.`\n/blacklist - `Blacklist A User.`\n/whitelist - `Whitelist A User.`"
+    )
 
 
 @luna.on_message(filters.command("shutdown") & filters.user(owner_id))
@@ -70,9 +78,10 @@ async def whitelist(_, message):
 
 
 @luna.on_message(
-        ~filters.command("blacklist") &
-        ~filters.command("shutdown") &
-        ~filters.command("help"))
+    ~filters.command("blacklist")
+    & ~filters.command("shutdown")
+    & ~filters.command("help")
+)
 async def chat(_, message):
     if message.from_user.id in blacklisted:
         return
@@ -106,10 +115,11 @@ async def chat(_, message):
 
 
 @luna.on_message(
-        filters.private & 
-        ~filters.command("blacklist") &
-        ~filters.command("shutdown") &
-        ~filters.command("help"))
+    filters.private
+    & ~filters.command("blacklist")
+    & ~filters.command("shutdown")
+    & ~filters.command("help")
+)
 async def chatpm(_, message):
     if message.from_user.id in blacklisted:
         return
@@ -126,12 +136,16 @@ async def chatpm(_, message):
     await message.reply_text(res)
     await luna.send_chat_action(message.chat.id, "cancel")
 
-print("""
+
+print(
+    """
 -----------------
 | Luna Started! |
 -----------------
 
-""")
+"""
+)
 
 
 luna.run()
+
