@@ -28,7 +28,7 @@ async def start(_, message):
 @luna.on_message(filters.command("shutdown") & filters.user(owner_id))
 async def shutdown(_, message):
     await luna.send_chat_action(message.chat.id, "typing")
-    await message.reply_text("**Shutting Down!**")
+    await message.reply_text("**Shutted Down!**")
     print("Exited!")
     exit()
 
@@ -68,27 +68,39 @@ async def whitelist(_, message):
 
 
 @luna.on_message(
-        filters.reply & 
         ~filters.command("blacklist") &
         ~filters.command("shutdown") &
         ~filters.command("help"))
 async def chat(_, message):
-    getme = await luna.get_me()
-    bot_id = getme.id
-    if not message.reply_to_message.from_user.id == bot_id:
-        return
-    await luna.send_chat_action(message.chat.id, "typing")
-    if not message.text:
-        query = "Hello"
+    if message.reply_to_message:
+        getme = await luna.get_me()
+        bot_id = getme.id
+        if not message.reply_to_message.from_user.id == bot_id:
+            return
+        await luna.send_chat_action(message.chat.id, "typing")
+        if not message.text:
+            query = "Hello"
+        else:
+            query = message.text
+        try:
+            res = await getresp(query)
+            await asyncio.sleep(1)
+        except Exception as e:
+            res = str(e)
+        await message.reply_text(res)
+        await luna.send_chat_action(message.chat.id, "cancel")
     else:
-        query = message.text
-    try:
-        res = await getresp(query)
-        await asyncio.sleep(1)
-    except Exception as e:
-        res = str(e)
-    await message.reply_text(res)
-    await luna.send_chat_action(message.chat.id, "cancel")
+        if message.text:
+            query = message.text
+            if "luna" in query or "Luna" in query or "@LunaChatBot" in query:
+                await luna.send_chat_action(message.chat.id, "typing")
+                try:
+                    res = await getresp(query)
+                    await asyncio.sleep(1)
+                except Exception as e:
+                    res = str(e)
+                await message.reply_text(res)
+                await luna.send_chat_action(message.chat.id, "cancel")
 
 
 @luna.on_message(
