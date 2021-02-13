@@ -1,6 +1,6 @@
 import aiohttp
 import asyncio
-from config import bot_token, owner_id
+from config import bot_token, owner_id, bot_id
 from pyrogram import Client, filters
 
 luna = Client(":memory:",bot_token=bot_token, api_id=6, api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e")
@@ -72,9 +72,9 @@ async def whitelist(_, message):
         ~filters.command("shutdown") &
         ~filters.command("help"))
 async def chat(_, message):
+    if message.from_user.id in blacklisted:
+        return
     if message.reply_to_message:
-        getme = await luna.get_me()
-        bot_id = getme.id
         if not message.reply_to_message.from_user.id == bot_id:
             return
         await luna.send_chat_action(message.chat.id, "typing")
@@ -109,6 +109,8 @@ async def chat(_, message):
         ~filters.command("shutdown") &
         ~filters.command("help"))
 async def chatpm(_, message):
+    if message.from_user.id in blacklisted:
+        return
     await luna.send_chat_action(message.chat.id, "typing")
     if not message.text:
         query = "Hello"
