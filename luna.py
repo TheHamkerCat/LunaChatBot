@@ -132,8 +132,8 @@ async def chatpm(_, message):
     try:
         res = await getresp(query)
         await asyncio.sleep(1)
-    except Exception as e:
-        res = str(e)
+    except Exception:
+        res = "Yeah, Makes Sense."
     await message.reply_text(res)
     await luna.send_chat_action(message.chat.id, "cancel")
 
