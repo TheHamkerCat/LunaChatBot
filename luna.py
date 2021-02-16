@@ -29,7 +29,7 @@ async def repo(_, message):
         "[Github](https://github.com/thehamkercat/LunaChatBot)"
         + " | [Group](t.me/PatheticProgrammers)", disable_web_page_preview=True)
 
-@luna.on_message(filters.command("help"))
+@luna.on_message(filters.command("help") & ~filters.edited)
 async def start(_, message):
     user_id = message.from_user.id
     if user_id in blacklisted:
@@ -40,7 +40,7 @@ async def start(_, message):
     )
 
 
-@luna.on_message(filters.command("shutdown") & filters.user(owner_id))
+@luna.on_message(filters.command("shutdown") & filters.user(owner_id) & ~filters.edited)
 async def shutdown(_, message):
     await luna.send_chat_action(message.chat.id, "typing")
     await message.reply_text("**Shutted Down!**")
@@ -48,7 +48,7 @@ async def shutdown(_, message):
     exit()
 
 
-@luna.on_message(filters.command("blacklist") & filters.user(owner_id))
+@luna.on_message(filters.command("blacklist") & filters.user(owner_id) & ~filters.edited)
 async def blacklist(_, message):
     global blacklisted
     if not message.reply_to_message:
@@ -65,7 +65,7 @@ async def blacklist(_, message):
     await message.reply_text("Blacklisted.")
 
 
-@luna.on_message(filters.command("whitelist") & filters.user(owner_id))
+@luna.on_message(filters.command("whitelist") & filters.user(owner_id) & ~filters.edited)
 async def whitelist(_, message):
     global blacklisted
     if not message.reply_to_message:
@@ -87,6 +87,7 @@ async def whitelist(_, message):
     ~filters.command("blacklist")
     & ~filters.command("shutdown")
     & ~filters.command("help")
+    & ~filters.edited
 )
 async def chat(_, message):
     if message.from_user.id in blacklisted:
@@ -129,6 +130,7 @@ async def chat(_, message):
     & ~filters.command("blacklist")
     & ~filters.command("shutdown")
     & ~filters.command("help")
+    & ~filters.edited
 )
 async def chatpm(_, message):
     if message.from_user.id in blacklisted:
