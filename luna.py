@@ -135,11 +135,10 @@ async def chat(_, message):
 async def chatpm(_, message):
     if message.from_user.id in blacklisted:
         return
-    await luna.send_chat_action(message.chat.id, "typing")
     if not message.text:
-        query = "Hello"
-    else:
-        query = message.text
+        return
+    await luna.send_chat_action(message.chat.id, "typing")
+    query = message.text
     if len(query) > 50:
         return
     try:
