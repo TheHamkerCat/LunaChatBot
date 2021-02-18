@@ -1,6 +1,8 @@
 import aiohttp
 import asyncio
 import re
+import os
+from gtts import gTTS
 from config import bot_token, owner_id, bot_id
 from pyrogram import Client, filters
 
@@ -13,7 +15,7 @@ luna = Client(
 )
 
 blacklisted = []
-
+mode = None
 
 async def getresp(query):
     url = f"https://lunabot.tech/?query={query}"
@@ -146,6 +148,11 @@ async def chatpm(_, message):
         await asyncio.sleep(1)
     except Exception as e:
         res = str(e)
+    await luna.send_chat_action(message.chat.id, 'record_audio')
+    tts = gTTS(res, lang="en")
+    tts.save('voice.ogg')
+    await luna.send_voice(message.chat.id, voice='voice.ogg')
+    os.remove('voice.ogg')
     await message.reply_text(res)
     await luna.send_chat_action(message.chat.id, "cancel")
 
