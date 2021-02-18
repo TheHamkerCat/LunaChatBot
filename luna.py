@@ -109,6 +109,11 @@ async def chat(_, message):
             await asyncio.sleep(1)
         except Exception as e:
             res = str(e)
+        await luna.send_chat_action(message.chat.id, 'record_audio')
+        tts = gTTS(res, lang="en")
+        tts.save('voice.ogg')
+        await luna.send_voice(message.chat.id, voice='voice.ogg')
+        os.remove('voice.ogg')
         await message.reply_text(res)
         await luna.send_chat_action(message.chat.id, "cancel")
     else:
@@ -123,6 +128,11 @@ async def chat(_, message):
                     await asyncio.sleep(1)
                 except Exception as e:
                     res = str(e)
+                await luna.send_chat_action(message.chat.id, 'record_audio')
+                tts = gTTS(res, lang="en")
+                tts.save('voice.ogg')
+                await luna.send_voice(message.chat.id, voice='voice.ogg')
+                os.remove('voice.ogg')
                 await message.reply_text(res)
                 await luna.send_chat_action(message.chat.id, "cancel")
 
