@@ -2,4 +2,3 @@ aiohttp
 pyrogram
 TgCrypto
 asyncio
-gtts
