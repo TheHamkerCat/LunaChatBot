@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 import re
-from config import bot_token, owner_id, bot_id
+from config import bot_token, owner_id, bot_id, ARQ_API_BASE_URL as ARQ
 from pyrogram import Client, filters
 
 
@@ -17,7 +17,7 @@ mode = None
 
 
 async def getresp(query):
-    url = f"https://lunabot.tech/?query={query}"
+    url = f"{ARQ}/luna?query={query}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             res = await res.json()
