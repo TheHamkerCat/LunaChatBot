@@ -17,7 +17,7 @@ mode = None
 
 
 async def getresp(query):
-    url = f"{ARQ}/luna?query={query}"
+    url = f"{ARQ}luna?query={query}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             res = await res.json()
