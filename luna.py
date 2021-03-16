@@ -1,9 +1,8 @@
-import aiohttp
 import asyncio
 import re
-from config import bot_token, owner_id, bot_id, ARQ_API_BASE_URL as ARQ
+from config import bot_token, owner_id, bot_id, ARQ_API_BASE_URL as ARQ_API
 from pyrogram import Client, filters
-
+from Python_ARQ import ARQ
 
 luna = Client(
     ":memory:",
@@ -12,17 +11,16 @@ luna = Client(
     api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
 )
 
+arq = ARQ(ARQ_API)
+
 blacklisted = []
 mode = None
 
 
 async def getresp(query):
-    url = f"{ARQ}luna?query={query}"
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as res:
-            res = await res.json()
-            text = res["response"]
-            return text
+    luna = await arq.luna(query)
+    response = luna.response
+    return response
 
 
 @luna.on_message(filters.command("repo") & ~filters.edited)

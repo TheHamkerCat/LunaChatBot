@@ -1,4 +1,3 @@
-aiohttp
 pyrogram
+python-arq
 TgCrypto
-asyncio
