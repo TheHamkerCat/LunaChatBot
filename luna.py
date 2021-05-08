@@ -46,7 +46,7 @@ async def shutdown(_, message):
 
 
 @luna.on_message(
-    ~filters.private &
+    ~filters.private
     & ~filters.command("shutdown")
     & ~filters.command("help")
     & ~filters.edited
