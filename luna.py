@@ -21,14 +21,20 @@ async def getresp(query):
     return response
 
 
-@luna.on_message(filters.command("repo") & ~filters.edited)
+@luna.on_message(
+    filters.command("repo")
+    & ~filters.edited
+)
 async def repo(_, message):
     await message.reply_text(
         "[GitHub](https://github.com/thehamkercat/LunaChatBot)"
         + " | [Group](t.me/PatheticProgrammers)", disable_web_page_preview=True)
 
 
-@luna.on_message(filters.command("help") & ~filters.edited)
+@luna.on_message(
+    filters.command("help")
+    & ~filters.edited
+)
 async def start(_, message):
     user_id = message.from_user.id
     await luna.send_chat_action(message.chat.id, "typing")
@@ -37,7 +43,11 @@ async def start(_, message):
     )
 
 
-@luna.on_message(filters.command("shutdown") & filters.user(owner_id) & ~filters.edited)
+@luna.on_message(
+    filters.command("shutdown")
+    & filters.user(owner_id)
+    & ~filters.edited
+)
 async def shutdown(_, message):
     await luna.send_chat_action(message.chat.id, "typing")
     await message.reply_text("**Shutted Down!**")
