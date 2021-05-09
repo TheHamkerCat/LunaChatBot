@@ -36,7 +36,6 @@ async def repo(_, message):
     & ~filters.edited
 )
 async def start(_, message):
-    user_id = message.from_user.id
     await luna.send_chat_action(message.chat.id, "typing")
     await message.reply_text(
         "/repo - Get Repo Link"
