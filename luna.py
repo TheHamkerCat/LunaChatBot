@@ -1,6 +1,6 @@
 import asyncio
 import re
-from config import bot_token, owner_id, bot_id, ARQ_API_BASE_URL as ARQ_API
+from config import bot_token, owner_id, bot_id, ARQ_API_BASE_URL as ARQ_API, ARQ_API_KEY
 from pyrogram import Client, filters
 from Python_ARQ import ARQ
 
@@ -11,13 +11,13 @@ luna = Client(
     api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
 )
 
-arq = ARQ(ARQ_API)
+arq = ARQ(ARQ_API, ARQ_API_KEY)
 mode = None
 
 
 async def getresp(query):
     luna = await arq.luna(query)
-    response = luna.response
+    response = luna.result
     return response
 
 
