@@ -1,6 +1,8 @@
 import asyncio
 import re
-from config import bot_token, owner_id, bot_id, ARQ_API_BASE_URL as ARQ_API, ARQ_API_KEY
+
+from config import ARQ_API_BASE_URL as ARQ_API
+from config import ARQ_API_KEY, bot_id, bot_token, owner_id
 from pyrogram import Client, filters
 from Python_ARQ import ARQ
 
@@ -21,32 +23,22 @@ async def getresp(query):
     return response
 
 
-@luna.on_message(
-    filters.command("repo")
-    & ~filters.edited
-)
+@luna.on_message(filters.command("repo") & ~filters.edited)
 async def repo(_, message):
     await message.reply_text(
         "[GitHub](https://github.com/thehamkercat/LunaChatBot)"
-        + " | [Group](t.me/PatheticProgrammers)", disable_web_page_preview=True)
-
-
-@luna.on_message(
-    filters.command("help")
-    & ~filters.edited
-)
-async def start(_, message):
-    await luna.send_chat_action(message.chat.id, "typing")
-    await message.reply_text(
-        "/repo - Get Repo Link"
+        + " | [Group](t.me/PatheticProgrammers)",
+        disable_web_page_preview=True,
     )
 
 
-@luna.on_message(
-    filters.command("shutdown")
-    & filters.user(owner_id)
-    & ~filters.edited
-)
+@luna.on_message(filters.command("help") & ~filters.edited)
+async def start(_, message):
+    await luna.send_chat_action(message.chat.id, "typing")
+    await message.reply_text("/repo - Get Repo Link")
+
+
+@luna.on_message(filters.command("shutdown") & filters.user(owner_id) & ~filters.edited)
 async def shutdown(_, message):
     await luna.send_chat_action(message.chat.id, "typing")
     await message.reply_text("**Shutted Down!**")
