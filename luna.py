@@ -1,9 +1,8 @@
 import asyncio
 import re
-
 from config import ARQ_API_BASE_URL as ARQ_API
 from config import ARQ_API_KEY, bot_id, bot_token, owner_id
-from pyrogram import Client, filters
+from pyrogram import Client, filters, idle
 from Python_ARQ import ARQ
 
 luna = Client(
