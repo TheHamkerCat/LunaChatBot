@@ -16,8 +16,8 @@ arq = ARQ(ARQ_API, ARQ_API_KEY)
 mode = None
 
 
-async def getresp(query):
-    luna = await arq.luna(query)
+async def getresp(query: str, user_id: int):
+    luna = await arq.luna(query, user_id)
     response = luna.result
     return response
 
@@ -63,7 +63,7 @@ async def chat(_, message):
         if len(query) > 50:
             return
         try:
-            res = await getresp(query)
+            res = await getresp(query, message.from_user.id if message.from_user else 0)
             await asyncio.sleep(1)
         except Exception as e:
             res = str(e)
@@ -77,7 +77,7 @@ async def chat(_, message):
             if re.search("[.|\n]{0,}[l|L][u|U][n|N][a|A][.|\n]{0,}", query):
                 await luna.send_chat_action(message.chat.id, "typing")
                 try:
-                    res = await getresp(query)
+                    res = await getresp(query, message.from_user.id if message.from_user else 0)
                     await asyncio.sleep(1)
                 except Exception as e:
                     res = str(e)
@@ -99,7 +99,7 @@ async def chatpm(_, message):
     if len(query) > 50:
         return
     try:
-        res = await getresp(query)
+        res = await getresp(query, message.from_user.id if message.from_user else 0)
         await asyncio.sleep(1)
     except Exception as e:
         res = str(e)
