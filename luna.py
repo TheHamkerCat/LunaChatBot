@@ -53,7 +53,9 @@ async def shutdown(_, message):
 )
 async def chat(_, message):
     if message.reply_to_message:
-        if not message.reply_to_message.from_user.id == bot_id:
+        if not message.reply_to_message.from_user:
+            return
+        if message.reply_to_message.from_user.id != bot_id:
             return
         await luna.send_chat_action(message.chat.id, "typing")
         if not message.text:
