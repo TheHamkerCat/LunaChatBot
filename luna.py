@@ -1,5 +1,6 @@
 import asyncio
 import re
+from aiohttp import ClientSession
 from config import ARQ_API_BASE_URL as ARQ_API
 from config import ARQ_API_KEY, bot_id, bot_token, owner_id
 from pyrogram import Client, filters, idle
@@ -11,10 +12,8 @@ luna = Client(
     api_id=6,
     api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
 )
-
-arq = ARQ(ARQ_API, ARQ_API_KEY)
-mode = None
-
+aiohttp_session = ClientSession()
+arq = ARQ(ARQ_API, ARQ_API_KEY, aiohttp_session)
 
 async def getresp(query: str, user_id: int):
     luna = await arq.luna(query, user_id)
@@ -108,7 +107,6 @@ async def chatpm(_, message):
     await message.reply_text(res)
     await luna.send_chat_action(message.chat.id, "cancel")
 
-
 luna.start()
 
 print(
@@ -119,5 +117,4 @@ print(
 -----------------
 """
 )
-
 idle()
