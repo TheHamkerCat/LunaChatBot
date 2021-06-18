@@ -1,8 +1,7 @@
-import asyncio
+from asyncio import sleep, gather
 import re
 from aiohttp import ClientSession
-from config import ARQ_API_BASE_URL as ARQ_API
-from config import ARQ_API_KEY, bot_id, bot_token, owner_id
+from config import ARQ_API_KEY, bot_token, ARQ_API_BASE_URL
 from pyrogram import Client, filters, idle
 from Python_ARQ import ARQ
 
@@ -12,13 +11,22 @@ luna = Client(
     api_id=6,
     api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
 )
+bot_id = int(bot_token.split(":")[0])
 aiohttp_session = ClientSession()
-arq = ARQ(ARQ_API, ARQ_API_KEY, aiohttp_session)
+arq = ARQ(ARQ_API_BASE_URL, ARQ_API_KEY, aiohttp_session)
 
-async def getresp(query: str, user_id: int):
+async def lunaQuery(query: str, user_id: int):
     luna = await arq.luna(query, user_id)
-    response = luna.result
-    return response
+    return luna.result
+
+async def type_and_send(message):
+    chat_id = message.chat.id
+    user_id = message.from_user.id if message.from_user else 0
+    query = message.text.strip()
+    await message._client.send_chat_action(chat_id, "typing")
+    response, _ = await gather(lunaQuery(query, user_id), sleep(2))
+    await message.reply_text(response)
+    await message._client.send_chat_action(chat_id, "cancel")
 
 
 @luna.on_message(filters.command("repo") & ~filters.edited)
@@ -33,79 +41,39 @@ async def repo(_, message):
 @luna.on_message(filters.command("help") & ~filters.edited)
 async def start(_, message):
     await luna.send_chat_action(message.chat.id, "typing")
+    await sleep(2)
     await message.reply_text("/repo - Get Repo Link")
-
-
-@luna.on_message(filters.command("shutdown") & filters.user(owner_id) & ~filters.edited)
-async def shutdown(_, message):
-    await luna.send_chat_action(message.chat.id, "typing")
-    await message.reply_text("**Shutted Down!**")
-    print("Exited!")
-    exit()
 
 
 @luna.on_message(
     ~filters.private
-    & ~filters.command("shutdown")
+    & filters.text
     & ~filters.command("help")
-    & ~filters.edited
+    & ~filters.edited,
+    group=69
 )
 async def chat(_, message):
     if message.reply_to_message:
         if not message.reply_to_message.from_user:
             return
-        if message.reply_to_message.from_user.id != bot_id:
+        from_user_id = message.reply_to_message.from_user.id
+        if from_user_id != bot_id:
             return
-        await luna.send_chat_action(message.chat.id, "typing")
-        if not message.text:
-            query = "Hello"
-        else:
-            query = message.text
-        if len(query) > 50:
-            return
-        try:
-            res = await getresp(query, message.from_user.id if message.from_user else 0)
-            await asyncio.sleep(1)
-        except Exception as e:
-            res = str(e)
-        await message.reply_text(res)
-        await luna.send_chat_action(message.chat.id, "cancel")
-    else:
-        if message.text:
-            query = message.text
-            if len(query) > 50:
-                return
-            if re.search("[.|\n]{0,}[l|L][u|U][n|N][a|A][.|\n]{0,}", query):
-                await luna.send_chat_action(message.chat.id, "typing")
-                try:
-                    res = await getresp(query, message.from_user.id if message.from_user else 0)
-                    await asyncio.sleep(1)
-                except Exception as e:
-                    res = str(e)
-                await message.reply_text(res)
-                await luna.send_chat_action(message.chat.id, "cancel")
+    match = re.search("[.|\n]{0,}luna[.|\n]{0,}", message.text.strip(), flags=re.IGNORECASE)
+    if not match and from_user_id != bot_id:
+        return
+    await type_and_send(message)
 
 
 @luna.on_message(
     filters.private
-    & ~filters.command("shutdown")
     & ~filters.command("help")
     & ~filters.edited
 )
 async def chatpm(_, message):
     if not message.text:
         return
-    await luna.send_chat_action(message.chat.id, "typing")
-    query = message.text
-    if len(query) > 50:
-        return
-    try:
-        res = await getresp(query, message.from_user.id if message.from_user else 0)
-        await asyncio.sleep(1)
-    except Exception as e:
-        res = str(e)
-    await message.reply_text(res)
-    await luna.send_chat_action(message.chat.id, "cancel")
+    await type_and_send(message)
 
 luna.start()
 
