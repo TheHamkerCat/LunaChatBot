@@ -59,9 +59,10 @@ async def chat(_, message):
         from_user_id = message.reply_to_message.from_user.id
         if from_user_id != bot_id:
             return
-    match = re.search("[.|\n]{0,}luna[.|\n]{0,}", message.text.strip(), flags=re.IGNORECASE)
-    if not match and from_user_id != bot_id:
-        return
+    else:
+        match = re.search("[.|\n]{0,}luna[.|\n]{0,}", message.text.strip(), flags=re.IGNORECASE)
+        if not match:
+            return
     await type_and_send(message)
 
 
