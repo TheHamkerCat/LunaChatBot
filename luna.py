@@ -1,9 +1,11 @@
-from asyncio import sleep, gather
 import re
+from asyncio import gather, get_event_loop, sleep
+
 from aiohttp import ClientSession
-from config import ARQ_API_KEY, bot_token, ARQ_API_BASE_URL
 from pyrogram import Client, filters, idle
 from Python_ARQ import ARQ
+
+from config import ARQ_API_BASE_URL, ARQ_API_KEY, LANGUAGE, bot_token
 
 luna = Client(
     ":memory:",
@@ -11,13 +13,26 @@ luna = Client(
     api_id=6,
     api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
 )
+
 bot_id = int(bot_token.split(":")[0])
-aiohttp_session = ClientSession()
-arq = ARQ(ARQ_API_BASE_URL, ARQ_API_KEY, aiohttp_session)
+arq = None
+
 
 async def lunaQuery(query: str, user_id: int):
-    luna = await arq.luna(query, user_id)
-    return luna.result
+    query = (
+        query
+        if LANGUAGE == "en"
+        else (await arq.translate(query, "en")).result.translatedText
+    )
+    resp = (await arq.luna(query, user_id)).result
+    return (
+        resp
+        if LANGUAGE == "en"
+        else (
+            await arq.translate(resp, LANGUAGE)
+        ).result.translatedText
+    )
+
 
 async def type_and_send(message):
     chat_id = message.chat.id
@@ -50,7 +65,7 @@ async def start(_, message):
     & filters.text
     & ~filters.command("help")
     & ~filters.edited,
-    group=69
+    group=69,
 )
 async def chat(_, message):
     if message.reply_to_message:
@@ -60,30 +75,40 @@ async def chat(_, message):
         if from_user_id != bot_id:
             return
     else:
-        match = re.search("[.|\n]{0,}luna[.|\n]{0,}", message.text.strip(), flags=re.IGNORECASE)
+        match = re.search(
+            "[.|\n]{0,}luna[.|\n]{0,}",
+            message.text.strip(),
+            flags=re.IGNORECASE,
+        )
         if not match:
             return
     await type_and_send(message)
 
 
 @luna.on_message(
-    filters.private
-    & ~filters.command("help")
-    & ~filters.edited
+    filters.private & ~filters.command("help") & ~filters.edited
 )
 async def chatpm(_, message):
     if not message.text:
         return
     await type_and_send(message)
 
-luna.start()
 
-print(
-    """
+async def main():
+    global arq
+    session = ClientSession()
+    arq = ARQ(ARQ_API_BASE_URL, ARQ_API_KEY, session)
 
+    await luna.start()
+    print(
+        """
 -----------------
 | Luna Started! |
 -----------------
 """
-)
-idle()
+    )
+    await idle()
+
+
+loop = get_event_loop()
+loop.run_until_complete(main())
