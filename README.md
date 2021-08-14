@@ -22,4 +22,4 @@ A public running instance can be found on telegram as [@LunaChatBot](https://t.m
 
 
 ## Deploy to Heruko:
-<a href="https://heroku.com/deploy?template=https://github.com/TheHamkerCat/LunaChatBot"><img src="https://www.herokucdn.com/deploy/button.svg" 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/TheHamkerCat/LunaChatBot)
