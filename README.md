@@ -19,3 +19,7 @@ A public running instance can be found on telegram as [@LunaChatBot](https://t.m
 4. `cp sample_config.py config.py`
 5. Edit `config.ini` with your own values.
 6. Run with `python3 luna.py`
+
+
+## Deploy to Heruko:
+<a href="https://heroku.com/deploy?template=https://github.com/TheHamkerCat/LunaChatBot"><img src="https://www.herokucdn.com/deploy/button.svg" 
