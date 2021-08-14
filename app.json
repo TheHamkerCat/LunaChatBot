@@ -1,0 +1,41 @@
+{
+   "name": "Luna",
+   "description": "A Telegram Chat bot made using Pyrogram and Python",
+   "keywords": [
+      "telegram bot",
+      "chat bot",
+   ],
+   "repository": "https://github.com/TheHamkerCat/LunaChatBot",
+   "env": {
+      "bot_token": {
+         "description": "Your telegram bot token, get from @Botfather in telegram.",
+         "required": true,
+         "value": ""
+      },
+      "ARQ_API_KEY": {
+         "description": "Get this from @ARQRobot",
+         "required": true,
+      },
+      "ARQ_API_BASE_URL": {
+         "description": "DO NOT TOUCH",
+         "required": true,
+         "value": "https://thearq.tech"
+      },
+      "LANGUAGE": {
+         "description": "Language aff.",
+         "required": true,
+         "value": "en"
+      }
+   },
+   "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+   "formation": {
+      "worker": {
+         "quantity": 1,
+         "size": "free"
+      }
+   }
+}
