@@ -17,5 +17,10 @@ A public running instance can be found on telegram as [@LunaChatBot](https://t.m
 2. `cd LunaChatBot`
 3. `pip3 install -r requirements.txt` to install the requirements.
 4. `cp sample_config.py config.py`
-5. Edit `config.ini` with your own values.
+5. Edit `config.py` with your own values.
 6. Run with `python3 luna.py`
+
+
+## Heroku
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/TheHamkerCat/LunaChatBot/tree/master)
