@@ -1,17 +1,11 @@
 import re
-import os
 from asyncio import gather, get_event_loop, sleep
 
 from aiohttp import ClientSession
 from pyrogram import Client, filters, idle
 from Python_ARQ import ARQ
 
-is_config = os.path.exists("config.py")
-
-if is_config:
-    from config import *
-else:
-    from sample_config import *
+from config import ARQ_API_BASE_URL, ARQ_API_KEY, LANGUAGE, bot_token
 
 luna = Client(
     ":memory:",
