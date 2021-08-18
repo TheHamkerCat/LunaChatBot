@@ -13,12 +13,6 @@ if is_config:
 else:
     from sample_config import *
 
-if HEROKU:
-    if is_config:
-        from config import bot_token
-    elif not is_config:
-        from sample_config import bot_token
-
 luna = Client(
     ":memory:",
     bot_token=bot_token,
