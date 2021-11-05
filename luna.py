@@ -53,8 +53,7 @@ async def type_and_send(message):
 @luna.on_message(filters.command("repo") & ~filters.edited)
 async def repo(_, message):
     await message.reply_text(
-        "[GitHub](https://github.com/thehamkercat/LunaChatBot)"
-        + " | [Group](t.me/PatheticProgrammers)",
+        "HEY SORY ITS PRIVATE",
         disable_web_page_preview=True,
     )
 
@@ -109,7 +108,7 @@ async def main():
     print(
         """
 -----------------
-| Luna Started! |
+| CHAT BOT STARTED Started! |
 -----------------
 """
     )
