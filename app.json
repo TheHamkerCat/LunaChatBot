@@ -22,7 +22,7 @@
     },
     "LANGUAGE": {
            "description": "Language of Chat Bot ,list --> https://py-googletrans.readthedocs.io/en/latest/#googletrans-languages",
-           "value": "en",
+           "value": "ta",
            "required": true
     },
     "ARQ_API_BASE_URL": {
