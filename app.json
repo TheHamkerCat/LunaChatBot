@@ -1,7 +1,7 @@
 {
-  "name": "Luna The Chat Bot",
+  "name": "SINS BOT",
   "description": "Just another Telegram AI chat bot written in Python using Pyrogram.",
-  "repository": "https://github.com/TheHamkerCat/LunaChatBot",
+  "repository": "https://github.com/varun0521/LunaChatBot",
   "keywords" : [
     "python",
     "ai-bot",
