@@ -27,7 +27,7 @@
     },
     "ARQ_API_BASE_URL": {
            "description": "ARQ URL ,Don't Change It",
-           "value": "https://thearq.tech",
+           "value": "https://arq.hamker.in",
            "required": true
     }
   },
