@@ -27,13 +27,13 @@ arq = None
 async def lunaQuery(query: str, user_id: int):
     query = (
         query
-        if LANGUAGE == "en"
-        else (await arq.translate(query, "en")).result.translatedText
+        if LANGUAGE == "az"
+        else (await arq.translate(query, "az")).result.translatedText
     )
     resp = (await arq.luna(query, user_id)).result
     return (
         resp
-        if LANGUAGE == "en"
+        if LANGUAGE == "az"
         else (
             await arq.translate(resp, LANGUAGE)
         ).result.translatedText
