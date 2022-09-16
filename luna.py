@@ -53,7 +53,7 @@ async def type_and_send(message):
 @luna.on_message(filters.command("repo") & ~filters.edited)
 async def repo(_, message):
     await message.reply_text(
-        "[Repo](https://github.com/yoshikage1/chisatochatbot)"
+        "[Github](https://github.com/yoshikage1/chisatochatbot)"
         + " | [support](t.me/kakashi_bots_support)",
         disable_web_page_preview=True,
     )
