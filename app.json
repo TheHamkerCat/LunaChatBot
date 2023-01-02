@@ -13,11 +13,12 @@
   "stack": "heroku-20",
   "env": {
     "bot_token": {
-           "description": "Your Bot's Api Token ,Get it from @BotFather",
+           "description": "5902513683:AAGp_GXgKxzBakJKhhH2J6O09rcwMQ8-5SM
+",
            "required": true
     },
     "ARQ_API_KEY": {
-           "description": "Get this from @ARQRobot",
+           "description": "JKOTOY-PORQWR-TBLZKD-HCNKEB-ARQ",
            "required": true
     },
     "LANGUAGE": {
