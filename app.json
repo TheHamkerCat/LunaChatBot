@@ -17,7 +17,7 @@
            "required": true
     },
     "ARQ_API_KEY": {
-           "description": "Get this from @ARQRobot",
+           "description": "Get this from @studysehoga_bot",
            "required": true
     },
     "LANGUAGE": {
