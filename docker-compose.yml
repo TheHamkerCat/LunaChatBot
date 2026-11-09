@@ -1,0 +1,26 @@
+services:
+  bot:
+    container_name: luna
+    build: .
+    restart: always
+    stop_grace_period: 30s
+    env_file: .env
+    volumes:
+      # Telegram session, so a restart does not log in again
+      - session:/app/data
+    # The bot only writes to the session volume
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          pids: 64
+
+volumes:
+  session:

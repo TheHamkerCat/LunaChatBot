@@ -1,39 +1,39 @@
 {
   "name": "Luna The Chat Bot",
-  "description": "Just another Telegram AI chat bot written in Python using Pyrogram.",
+  "description": "Telegram AI chat bot written in Python with Telethon.",
   "repository": "https://github.com/TheHamkerCat/LunaChatBot",
-  "keywords" : [
+  "keywords": [
     "python",
     "ai-bot",
     "telegram-ai-bot",
     "telegram-bot",
-    "pyrogram",
+    "telethon",
     "arq"
   ],
-  "stack": "heroku-20",
+  "stack": "container",
   "env": {
-    "bot_token": {
-           "description": "Your Bot's Api Token ,Get it from @BotFather",
-           "required": true
+    "BOT_TOKEN": {
+      "description": "Your bot's token. Get it from @BotFather.",
+      "required": true
     },
     "ARQ_API_KEY": {
-           "description": "Get this from @ARQRobot",
-           "required": true
+      "description": "Get this from @ARQRobot.",
+      "required": true
     },
-    "LANGUAGE": {
-           "description": "Language of Chat Bot ,list --> https://py-googletrans.readthedocs.io/en/latest/#googletrans-languages",
-           "value": "en",
-           "required": true
+    "ARQ_API_URL": {
+      "description": "The ARQ server whose chat model writes Luna's answers.",
+      "value": "https://arq.hamker.dev",
+      "required": true
     },
-    "ARQ_API_BASE_URL": {
-           "description": "ARQ URL ,Don't Change It",
-           "value": "https://arq.hamker.in",
-           "required": true
+    "API_ID": {
+      "description": "Telegram API ID. 6 is the official Android app; your own is at https://my.telegram.org.",
+      "value": "6",
+      "required": true
+    },
+    "API_HASH": {
+      "description": "Telegram API hash that belongs to API_ID.",
+      "value": "eb06d4abfb49dc3eeb1aeb98ae0f581e",
+      "required": true
     }
-  },
-  "buildpacks": [
-   {
-    "url": "heroku/python"
-   }
-  ]
+  }
 }

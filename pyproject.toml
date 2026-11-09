@@ -1,0 +1,15 @@
+[project]
+name = "lunachatbot"
+version = "2.0.0"
+description = "Telegram AI chat bot written in Python with Telethon"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+    "telethon==1.45.0",
+    "httpx>=0.28.1,<0.29",
+]
+
+[tool.uv]
+# An application, not a library: uv installs the dependencies only
+package = false

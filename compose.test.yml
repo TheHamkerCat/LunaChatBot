@@ -1,0 +1,9 @@
+# Tests: docker compose -f compose.test.yml run --rm --build tests
+name: luna-test
+
+services:
+  tests:
+    build: .
+    command: ["python3", "-m", "unittest", "discover", "-s", "tests", "-t", ".", "-v"]
+    volumes:
+      - ./tests:/app/tests:ro

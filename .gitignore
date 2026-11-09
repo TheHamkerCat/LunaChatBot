@@ -1,3 +1,12 @@
-config.py
+.env
+# Telegram session (see luna/app.py)
+data/
 *.session
-__pycache__
+*.session-journal
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
