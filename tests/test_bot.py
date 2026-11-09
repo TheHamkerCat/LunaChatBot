@@ -27,6 +27,15 @@ class WhoGetsAnAnswerTest(LunaTestCase):
         self.assertEqual(self.arq.calls, [("hi *there*", USER_ID)])
         self.assertEqual(event.replies, [("echo: hi *there*", {"link_preview": False, "parse_mode": None})])
 
+    async def test_quotes_only_in_groups(self):
+        luna = self.make_luna()
+        in_private, in_group = private("hi"), group("hi luna")
+        await luna.on_message(in_private)
+        await luna.on_message(in_group)
+        await luna.on_message(private("/help"))
+        self.assertEqual(in_private.quoted, [False])
+        self.assertEqual(in_group.quoted, [True])
+
     async def test_group_messages_need_the_word_luna(self):
         luna = self.make_luna()
         for text in ("Hey Luna, how are you?", "luna's turn", "what is LUNA"):

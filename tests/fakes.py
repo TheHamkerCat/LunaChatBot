@@ -67,6 +67,7 @@ class FakeEvent:
     reply_error: Optional[Exception] = None
     replies: list = field(default_factory=list)
     sent: list = field(default_factory=list)
+    quoted: list = field(default_factory=list)  # per answer: did it quote the message
 
     async def get_input_chat(self):
         return f"input-chat-{self.chat_id}"
@@ -78,9 +79,18 @@ class FakeEvent:
         return SimpleNamespace(title=GROUP_TITLE if self.is_group else None)
 
     async def reply(self, text, **options):
+        """Sends text quoting the message"""
+        return self._send(text, options, quoted=True)
+
+    async def respond(self, text, **options):
+        """Sends text to the chat, without a quote"""
+        return self._send(text, options, quoted=False)
+
+    def _send(self, text, options, quoted):
         if self.reply_error:
             raise self.reply_error
         self.replies.append((text, options))
+        self.quoted.append(quoted)
         sent = FakeMessage(text, sender_id=BOT.id)
         self.sent.append(sent)
         return sent

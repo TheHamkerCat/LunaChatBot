@@ -120,11 +120,14 @@ async def chat_title(event) -> str:
 
 
 async def send_reply(event, text: str, **options):
-    """Reply to the message and return the sent message. Telegram errors
+    """Answer the message and return the sent message. In a group the
+    answer quotes the message, so everyone sees who it is for; in a private
+    chat it is a plain message, like a person texting back. Telegram errors
     (no right to write, flood wait too long) are logged instead of raised,
     and the result is None."""
+    send = event.respond if event.is_private else event.reply
     try:
-        return await event.reply(text, link_preview=False, **options)
+        return await send(text, link_preview=False, **options)
     except RPCError as error:
         logger.warning("Can't reply in chat %s: %s", event.chat_id, error)
         return None
