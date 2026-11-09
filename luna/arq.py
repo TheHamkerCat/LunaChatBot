@@ -1,3 +1,4 @@
+import base64
 import logging
 from typing import Optional
 
@@ -5,16 +6,21 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-# ARQ starts one /luna request per API key every 10 seconds and keeps up
-# to 5 more waiting, so the last one in line can wait about a minute
+# ARQ starts one /luna request per API key every 5 seconds and keeps up
+# to 5 more waiting, so the last one in line waits about 25 seconds plus
+# the time the model takes
 TIMEOUT_SECONDS = 120
 CONNECT_TIMEOUT_SECONDS = 10
-# ARQ refuses longer messages
+# ARQ refuses longer messages, names and group titles
 MAX_QUERY_CHARS = 4000
+MAX_NAME_CHARS = 64
+MAX_TITLE_CHARS = 128
+# Photos (JPEG, PNG or WebP) ARQ accepts
+MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
-# Shown in chats instead of an answer
-BUSY_TEXT = "Too many people are talking to me right now. Try again in a minute."
-UNAVAILABLE_TEXT = "I can't answer right now. Try again later."
+# Shown in chats instead of an answer, in Luna's voice
+BUSY_TEXT = "ugh too many people texting me rn, try again in a min"
+UNAVAILABLE_TEXT = "can't reply rn, try again in a bit"
 
 
 class LunaError(Exception):
@@ -51,11 +57,25 @@ class ArqClient:
     async def close(self):
         await self._client.aclose()
 
-    async def luna(self, text: str, user_id: int) -> str:
+    async def luna(self, text: str, user_id: int, name: str = "", chat: str = "",
+                   chat_title: str = "", context=(), image: Optional[bytes] = None) -> str:
         """Luna's answer to text. ARQ remembers the conversation per
-        user_id (and API key); 0 means no memory."""
+        user_id (and API key); 0 means no memory. name: the user's first
+        name; chat: "private" or "group"; context: the group's latest
+        messages (see group_log.py), used for this answer only. image: a
+        photo she sees with the text (which may then be empty)."""
+        payload = {
+            "query": text,
+            "id": user_id,
+            "name": name[:MAX_NAME_CHARS],
+            "chat": chat,
+            "chat_title": chat_title[:MAX_TITLE_CHARS],
+            "context": list(context),
+        }
+        if image:
+            payload["image"] = base64.b64encode(image).decode()
         try:
-            response = await self._client.get("luna", params={"query": text, "id": user_id})
+            response = await self._client.post("luna", json=payload)
         except httpx.HTTPError as error:
             # Connection problems and timeouts
             logger.warning("Can't reach ARQ: %s", type(error).__name__)
@@ -71,7 +91,9 @@ class ArqClient:
 
         answered = response.status_code < 400 and body.get("ok") is True
         if not answered or not isinstance(result, str) or not result.strip():
-            # ARQ's error text is about the request, never the user's message
-            logger.warning("ARQ /luna failed: HTTP %s, %r", response.status_code, result)
+            # ARQ's error text is about the request, never the user's message.
+            # A refused request body (HTTP 422) comes as "detail".
+            logger.warning("ARQ /luna failed: HTTP %s, %r", response.status_code,
+                           result if result is not None else body.get("detail"))
             raise LunaError(UNAVAILABLE_TEXT)
         return result.strip()

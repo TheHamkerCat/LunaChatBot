@@ -28,13 +28,31 @@ class LunaRequestTest(unittest.IsolatedAsyncioTestCase):
     async def test_request_and_answer(self):
         seen = []
         arq = client_answering(body={"ok": True, "result": "  Hello there!  "}, seen=seen)
-        self.assertEqual(await arq.luna("hi & bye?", 42), "Hello there!")
+        context = [{"name": "Priya", "text": "hi", "time": 1, "reply_to": "", "is_luna": False}]
+        answer = await arq.luna("hi & bye?", 42, name="R" * 70, chat="group", chat_title="Andheri Gang",
+                                context=context)
+        self.assertEqual(answer, "Hello there!")
         await arq.close()
         request = seen[0]
-        self.assertEqual(request.method, "GET")
+        self.assertEqual(request.method, "POST")
         self.assertEqual(request.url.path, "/luna")
-        self.assertEqual(dict(request.url.params), {"query": "hi & bye?", "id": "42"})
+        self.assertEqual(json.loads(request.content), {
+            "query": "hi & bye?", "id": 42, "name": "R" * 64, "chat": "group",
+            "chat_title": "Andheri Gang", "context": context,
+        })
         self.assertEqual(request.headers["X-API-KEY"], KEY)
+
+    async def test_photo_is_sent_as_base64(self):
+        seen = []
+        arq = client_answering(body={"ok": True, "result": "cute"}, seen=seen)
+        await arq.luna("", 1, chat="private", image=b"\xff\xd8jpeg")
+        self.assertEqual(json.loads(seen[0].content)["image"], "/9hqcGVn")
+
+    async def test_refused_request_body_is_logged(self):
+        arq = client_answering(422, {"detail": [{"loc": ["body", "chat"], "msg": "string does not match regex"}]})
+        with self.assertLogs("luna.arq", "WARNING") as logs, self.assertRaises(LunaError):
+            await arq.luna("hi", 1, chat="channel")
+        self.assertIn("string does not match regex", "\n".join(logs.output))
 
     async def test_full_queue_is_busy(self):
         arq = client_answering(429, {"ok": False, "result": "Too many requests"})
